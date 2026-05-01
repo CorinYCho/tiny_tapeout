@@ -9,7 +9,9 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-instantiates range finder for test run
+The CPU tb sends address, read/write bit, write data, and request valid signal.
+The inputs are req_valid, req_rw (0 for read 1 for write), req_phase, req_addr, req_wdata
+The outputs are resp_valid, resp_rw, resp_rdata
 
 ## How to test
 
@@ -19,5 +21,4 @@ instantiates range finder for test run
 
 
 ## External hardware
-
-none for now
+none 

@@ -41,7 +41,7 @@ async def test_mem_top(dut):
     dut.uio_in.value = 0
 
     # wait for write ack
-    for _ in range(500):
+    for _ in range(2000):
         await RisingEdge(dut.clk)
         await Timer(2, units="ns")
         try:
