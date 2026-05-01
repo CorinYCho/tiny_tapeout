@@ -55,20 +55,20 @@ def make_addr(bank, row, col):
 
 async def cpu_write(dut, addr, wdata):
     await RisingEdge(dut.clk)
-    await Timer(2, unit="ns")
+    await Timer(2, units="ns")
     set_req(dut, valid=1, rw=1, phase=0, data=addr)
 
     await RisingEdge(dut.clk)
-    await Timer(2, unit="ns")
+    await Timer(2, units="ns")
     set_req(dut, valid=1, rw=1, phase=1, data=wdata)
 
     await RisingEdge(dut.clk)
-    await Timer(2, unit="ns")
+    await Timer(2, units="ns")
     set_req(dut, valid=0)
 
     for cycle in range(500):
         await RisingEdge(dut.clk)
-        await Timer(2, unit="ns")
+        await Timer(2, units="ns")
         _, resp_valid, resp_rw, has_x = get_resp(dut)
         dut._log.info(f"  cpu_write poll [{cycle}]: uio_out={safe_uio_str(dut)} valid={resp_valid} rw={resp_rw} x={has_x}")
         if not has_x and resp_valid and resp_rw:
@@ -79,16 +79,16 @@ async def cpu_write(dut, addr, wdata):
 
 async def cpu_read(dut, addr):
     await RisingEdge(dut.clk)
-    await Timer(2, unit="ns")
+    await Timer(2, units="ns")
     set_req(dut, valid=1, rw=0, phase=0, data=addr)
 
     await RisingEdge(dut.clk)
-    await Timer(2, unit="ns")
+    await Timer(2, units="ns")
     set_req(dut, valid=0)
 
     for cycle in range(500):
         await RisingEdge(dut.clk)
-        await Timer(2, unit="ns")
+        await Timer(2, units="ns")
         resp_data, resp_valid, resp_rw, has_x = get_resp(dut)
         dut._log.info(f"  cpu_read  poll [{cycle}]: uio_out={safe_uio_str(dut)} valid={resp_valid} rw={resp_rw} x={has_x} data=0x{resp_data:02X}")
         if not has_x and resp_valid and not resp_rw:
@@ -105,7 +105,7 @@ async def cpu_read(dut, addr):
 async def test_mem_top(dut):
     dut._log.info("Start")
 
-    clock = Clock(dut.clk, 40, unit="ns")
+    clock = Clock(dut.clk, 40, units="ns")
     cocotb.start_soon(clock.start())
 
     dut.ena.value    = 1
@@ -116,18 +116,18 @@ async def test_mem_top(dut):
     dut.rst_n.value = 0
     for _ in range(5):
         await RisingEdge(dut.clk)
-    await Timer(2, unit="ns")
+    await Timer(2, units="ns")
     dut.rst_n.value = 1
 
     # Log internal state after reset to confirm design is alive
     await RisingEdge(dut.clk)
-    await Timer(2, unit="ns")
+    await Timer(2, units="ns")
     dut._log.info(f"post-reset: resp_valid={dut.user_project.resp_valid.value} resp_rw={dut.user_project.resp_rw.value}")
 
     # Extra settling cycles for GL
     for _ in range(19):
         await RisingEdge(dut.clk)
-    await Timer(2, unit="ns")
+    await Timer(2, units="ns")
 
     dut._log.info("TEST: write 0xAB -> bank0/row0/col0, read back")
 
