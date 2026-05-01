@@ -20,32 +20,22 @@ def set_req(dut, *, valid=0, rw=0, phase=0, data=0):
 
 
 def get_resp(dut):
-    """Returns (resp_data, resp_valid, resp_rw, has_x) where has_x=True means outputs contain X/Z."""
+    """Returns (resp_data, resp_valid, resp_rw, has_x).
+    Reads internal signals directly to avoid tristate X issues on uio_out in GL sim."""
     try:
         resp_data  = dut.uo_out.value.to_unsigned()
         resp_valid = int(dut.user_project.resp_valid.value)
-        resp_bz    = int(dut.user_project.resp_bz.value)
         resp_rw    = int(dut.user_project.resp_rw.value)
         return resp_data, resp_valid, resp_rw, False
     except ValueError:
-        return 0, 0, 0, True   # X/Z on output — not ready yet
-
-    try:
-        uio_out = dut.uio_out.value.to_unsigned()
-    except ValueError:
-        return 0, 0, 0, True   # X/Z on output — not ready yet
-
-    resp_rw    = (uio_out >> 0) & 1
-    resp_valid = (uio_out >> 2) & 1
-    return resp_data, resp_valid, resp_rw, False
+        return 0, 0, 0, True  # X/Z still present
 
 
 def safe_uio_str(dut):
-    """Return uio_out as a binary string, safe against X/Z."""
     try:
         return f"{dut.uio_out.value.to_unsigned():08b}"
     except ValueError:
-        return str(dut.uio_out.value)   # prints something like "0X001ZZ0"
+        return str(dut.uio_out.value)
 
 
 def make_addr(bank, row, col):
@@ -108,7 +98,6 @@ async def cpu_read(dut, addr):
 async def test_mem_top(dut):
     dut._log.info("Start")
 
-    # 25 MHz = 40 ns period; start clock before driving anything
     clock = Clock(dut.clk, 40, unit="ns")
     cocotb.start_soon(clock.start())
 
@@ -121,11 +110,15 @@ async def test_mem_top(dut):
     for _ in range(5):
         await RisingEdge(dut.clk)
     await Timer(2, unit="ns")
-    dut._log.info(f"reset check: reset={dut.user_project.reset.value} resp_valid={dut.user_project.resp_valid.value}")
     dut.rst_n.value = 1
 
-    # Extra settling cycles for GL — sky130 cells need time to clear X/Z
-    for _ in range(20):
+    # Log internal state after reset to confirm design is alive
+    await RisingEdge(dut.clk)
+    await Timer(2, unit="ns")
+    dut._log.info(f"post-reset: resp_valid={dut.user_project.resp_valid.value} resp_rw={dut.user_project.resp_rw.value}")
+
+    # Extra settling cycles for GL
+    for _ in range(19):
         await RisingEdge(dut.clk)
     await Timer(2, unit="ns")
 
