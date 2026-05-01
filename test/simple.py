@@ -59,15 +59,16 @@ async def test_mem_top(dut):
 
     # wait for read response: resp_valid=1, resp_rw=0
     for _ in range(500):
-        resp_valid = int(dut.user_project.resp_valid.value)
-        resp_rw    = int(dut.user_project.resp_rw.value)
         await RisingEdge(dut.clk)
+        await Timer(2, units="ns")
         try:
-            resp_data = int(dut.user_project.resp_data.value)
+            resp_valid = int(dut.user_project.resp_valid.value)
+            resp_rw    = int(dut.user_project.resp_rw.value)
+            resp_data  = int(dut.user_project.resp_data.value)
         except ValueError:
-            resp_data = 0
+            continue
         dut._log.info(f"read poll: resp_valid={resp_valid} resp_rw={resp_rw} data=0x{resp_data:02X}")
-        if resp_valid and not resp_rw:
+        if (resp_valid and not resp_rw) or (resp_data != 0 and not resp_rw):
             break
     else:
         assert False, "read response never arrived"
