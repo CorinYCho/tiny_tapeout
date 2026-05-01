@@ -22,7 +22,11 @@ def set_req(dut, *, valid=0, rw=0, phase=0, data=0):
 def get_resp(dut):
     """Returns (resp_data, resp_valid, resp_rw, has_x) where has_x=True means outputs contain X/Z."""
     try:
-        resp_data = dut.uo_out.value.to_unsigned()
+        resp_data  = dut.uo_out.value.to_unsigned()
+        resp_valid = int(dut.user_project.resp_valid.value)
+        resp_bz    = int(dut.user_project.resp_bz.value)
+        resp_rw    = int(dut.user_project.resp_rw.value)
+        return resp_data, resp_valid, resp_rw, False
     except ValueError:
         return 0, 0, 0, True   # X/Z on output — not ready yet
 
