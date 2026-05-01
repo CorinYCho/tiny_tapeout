@@ -139,7 +139,7 @@ async def test_mem_top(dut):
     for _ in range(10):
         await RisingEdge(dut.clk)
     await Timer(2, units="ns")
-    dut._log.info(f"after reset: cur_state={dut.user_project.u_ctlr.cur_state.value}")
+    # dut._log.info(f"after reset: cur_state={dut.user_project.u_ctlr.cur_state.value}")
 
     # --- WRITE: addr=0x00, data=0x03 ---
 
