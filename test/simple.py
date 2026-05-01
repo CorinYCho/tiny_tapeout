@@ -22,8 +22,7 @@ async def test_mem_top(dut):
     for _ in range(10):
         await RisingEdge(dut.clk)
 
-    # --- WRITE addr=0x00, data=0x03 ---
-
+    # WRITE addr=0x00, data=0x03 
     # addr phase: drive AFTER rising edge
     await RisingEdge(dut.clk)
     await Timer(2, units="ns")
@@ -58,7 +57,7 @@ async def test_mem_top(dut):
     else:
         assert False, "write ack never arrived"
 
-    # --- READ addr=0x00 ---
+    # READ addr=0x00 
 
     # addr phase
     await RisingEdge(dut.clk)
