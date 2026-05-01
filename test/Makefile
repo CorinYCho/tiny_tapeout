@@ -41,5 +41,7 @@ TOPLEVEL = tb
 # List test modules to run, separated by commas and without the .py suffix:
 MODULE= simple
 
+export COCOTB_RESOLVE_X=ZEROS
+
 # include cocotb's make rules to take care of the simulator setup
 include $(shell cocotb-config --makefiles)/Makefile.sim
