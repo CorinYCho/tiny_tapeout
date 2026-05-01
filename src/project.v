@@ -419,9 +419,10 @@ module rq_fsm (
 	reg [23:0] entry_reg;
 	assign entry = entry_reg;
 	always @(posedge clk or posedge rst)
-		if (rst)
+		if (rst) begin
 			entry_reg <= 1'sb0;
 			entry_ready <= 1'b0;
+		end
 		else if (req_valid && queue_not_full) begin
 			if (!req_rw) begin
 				entry_ready <= 1'b1;
