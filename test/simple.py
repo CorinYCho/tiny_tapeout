@@ -7,7 +7,7 @@ from cocotb.triggers import RisingEdge, Timer
 async def test_mem_top(dut):
 
     # start 25 MHz clock
-    cocotb.start_soon(Clock(dut.clk, 40, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 40, units="ns").start())
 
     dut.ena.value    = 1
     dut.ui_in.value  = 0
