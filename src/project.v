@@ -421,6 +421,7 @@ module rq_fsm (
 	always @(posedge clk or posedge rst)
 		if (rst)
 			entry_reg <= 1'sb0;
+			entry_ready <= 1'b0;
 		else if (req_valid && queue_not_full) begin
 			if (!req_rw) begin
 				entry_ready <= 1'b1;
