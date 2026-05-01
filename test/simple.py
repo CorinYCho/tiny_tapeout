@@ -95,7 +95,7 @@ async def cpu_read(dut, addr):
 async def test_mem_top(dut):
     dut._log.info("Start")
 
-    clock = Clock(dut.clk, 10)
+    clock = Clock(dut.clk, 40)
     cocotb.start_soon(clock.start())
 
     dut.ena.value    = 1
