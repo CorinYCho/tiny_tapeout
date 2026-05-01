@@ -43,15 +43,15 @@ def make_addr(bank, row, col):
 
 async def cpu_write(dut, addr, wdata):
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
     set_req(dut, valid=1, rw=1, phase=0, data=addr)
 
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
     set_req(dut, valid=1, rw=1, phase=1, data=wdata)
 
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
     set_req(dut, valid=0)
 
     while True:
@@ -59,19 +59,19 @@ async def cpu_write(dut, addr, wdata):
         if resp_valid and resp_rw:
             break
         await RisingEdge(dut.clk)
-        await Timer(1, unit="ns")
+        await Timer(1)
 
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
 
 
 async def cpu_read(dut, addr):
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
     set_req(dut, valid=1, rw=0, phase=0, data=addr)
 
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
     set_req(dut, valid=0)
 
     while True:
@@ -79,11 +79,11 @@ async def cpu_read(dut, addr):
         if resp_valid and not resp_rw:
             break
         await RisingEdge(dut.clk)
-        await Timer(1, unit="ns")
+        await Timer(1)
 
     rdata = resp_data
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
     return rdata
 
 
@@ -95,7 +95,7 @@ async def cpu_read(dut, addr):
 async def test_mem_top(dut):
     dut._log.info("Start")
 
-    clock = Clock(dut.clk, 10, unit="ns")
+    clock = Clock(dut.clk, 10)
     cocotb.start_soon(clock.start())
 
     dut.ena.value    = 1
@@ -105,10 +105,10 @@ async def test_mem_top(dut):
     # Reset
     dut.rst_n.value = 0
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
     dut.rst_n.value = 1
     await RisingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(1)
 
     # Single smoke test: write 0xAB to bank0/row0/col0, read it back
     dut._log.info("TEST: write 0xAB -> bank0/row0/col0, read back")
