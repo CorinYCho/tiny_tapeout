@@ -47,8 +47,8 @@ async def test_mem_top(dut):
         await RisingEdge(dut.clk)
         await Timer(2, units="ns")
         try:
-            resp_valid = int(dut.user_project.resp_valid.value)
-            resp_rw    = int(dut.user_project.resp_rw.value)
+            resp_valid = (int(dut.uio_out.value) >> 2) & 1
+            resp_rw    = (int(dut.uio_out.value) >> 0) & 1
         except ValueError:
             dut._log.info("write poll: X/Z, waiting")
             continue
@@ -78,9 +78,9 @@ async def test_mem_top(dut):
         await RisingEdge(dut.clk)
         await Timer(2, units="ns")
         try:
-            resp_valid = int(dut.user_project.resp_valid.value)
-            resp_rw    = int(dut.user_project.resp_rw.value)
-            resp_data  = int(dut.user_project.resp_data.value)
+            resp_valid = (int(dut.uio_out.value) >> 2) & 1
+            resp_rw    = (int(dut.uio_out.value) >> 0) & 1
+            resp_data  = int(dut.uo_out.value)
         except ValueError:
             dut._log.info("read poll: X/Z, waiting")
             continue
