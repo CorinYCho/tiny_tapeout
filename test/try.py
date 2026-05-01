@@ -121,6 +121,7 @@ async def test_mem_top(dut):
     for _ in range(5):
         await RisingEdge(dut.clk)
     await Timer(2, unit="ns")
+    dut._log.info(f"reset check: reset={dut.user_project.reset.value} resp_valid={dut.user_project.resp_valid.value}")
     dut.rst_n.value = 1
 
     # Extra settling cycles for GL — sky130 cells need time to clear X/Z
