@@ -20,27 +20,25 @@ def set_req(dut, *, valid=0, rw=0, phase=0, data=0):
 
 
 def get_resp(dut):
-    """Returns (resp_data, resp_valid, resp_rw, has_x).
-    Reads internal control signals first — uo_out may stay X in GL due to
-    tristate buffers, so we only use it for data and tolerate X there."""
     try:
         resp_valid = int(dut.user_project.resp_valid.value)
         resp_rw    = int(dut.user_project.resp_rw.value)
     except ValueError:
-        return 0, 0, 0, True  # internal signals still X
+        return 0, 0, 0, True
 
-    # uo_out goes through tristate buffers in GL and may stay X — treat as 0
     try:
-        resp_data = dut.uo_out.value.to_unsigned()
+        val = dut.uo_out.value
+        resp_data = val.integer if hasattr(val, 'integer') else val.to_unsigned()
     except ValueError:
         resp_data = 0
 
     return resp_data, resp_valid, resp_rw, False
 
-
 def safe_uio_str(dut):
     try:
-        return f"{dut.uio_out.value.to_unsigned():08b}"
+        val = dut.uio_out.value
+        n = val.integer if hasattr(val, 'integer') else val.to_unsigned()
+        return f"{n:08b}"
     except ValueError:
         return str(dut.uio_out.value)
 
