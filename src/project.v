@@ -70,7 +70,7 @@ module bank_tracker (
 	pre_en
 );
 	reg _sv2v_0;
-	parameter signed [31:0] N_BANKS = 2;
+	parameter signed [31:0] N_BANKS = 1;
 	parameter signed [31:0] ROW_W = 2;
 	input wire clk;
 	input wire rst;
