@@ -22,6 +22,13 @@ The memory controller also has a bank table that keeps track of which bank/row
 is open, and if the project wants to develop further, the bank table can be
 used for scheduling the memory requests in different ways.
 
+Parameters of the design:
+Although the design was initially intended for multiple banks, for the purposes
+of reducing the area, the final design only includes 1 bank, 2 rows, and 2 cols.
+
+Freqeuncy of the design:
+For the frequency, the design is able to run safely with a 50MHz clock.
+
 The interface is as follows:
 
 Inputs (11 input pins):
@@ -76,8 +83,11 @@ folder_for_sv_design folder to cover some test cases I've listed below.
 - Testing row conflicts
 - Data that is all 0s or all 1s
 
-I have also created a very simple cocotb tb, included in the simple.py file 
-under the test folder.
+Using the system verilog design + tb, I have attached an image of a basic 
+read + write request waveform in the under the docs folder. (read_write.jpg).
+
+After converting to the verilog files, I have also created a very simple 
+cocotb tb, included in the simple.py file under the test folder.
 
 
 ## External hardware

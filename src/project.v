@@ -70,7 +70,7 @@ module bank_tracker (
 	pre_en
 );
 	reg _sv2v_0;
-	parameter signed [31:0] N_BANKS = 2;
+	parameter signed [31:0] N_BANKS = 1;
 	parameter signed [31:0] ROW_W = 2;
 	input wire clk;
 	input wire rst;
@@ -122,7 +122,7 @@ module fake_memory (
 	mem_resp_rdata,
 	mem_resp_rw
 );
-	parameter signed [31:0] N_BANKS = 2;
+	parameter signed [31:0] N_BANKS = 1;
 	parameter signed [31:0] N_ROWS = 2;
 	parameter signed [31:0] N_COLS = 2;
 	input wire clk;
@@ -289,7 +289,7 @@ module mem_ctrl (
 		endcase
 	end
 	bank_tracker #(
-		.N_BANKS(2),
+		.N_BANKS(1),
 		.ROW_W(2)
 	) u_bank_tracker(
 		.clk(clk),
@@ -372,7 +372,7 @@ module mem_top (
 		.resp_rw(resp_rw)
 	);
 	fake_memory #(
-		.N_BANKS(2),
+		.N_BANKS(1),
 		.N_ROWS(2),
 		.N_COLS(2)
 	) u_fake_mem(
